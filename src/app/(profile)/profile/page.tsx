@@ -2,7 +2,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { auth, signIn } from "~/server/auth";
 import { HydrateClient } from "~/trpc/server";
-import { SignOutButton } from "./signoutButton";
+import { SignOutButton } from "../../_components/signoutButton";
 
 export default async function ProfilePage() {
     const user = await auth();

@@ -1,27 +1,30 @@
 import Link from "next/link";
 
 import { LatestPost } from "~/app/_components/post";
+import { formatDate, getDaysUntilChristmas } from "~/lib/utils";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
+import { CalendarCard } from "./calenderCard";
 
 export default async function Home() {
-  const date = new Date().getDate();
-  const month = new Date().getMonth();
-
-  console.log('date', date, "month", month)
+  const daysUntilChristmas = getDaysUntilChristmas()
+  const today = new Date()
+  console.log('date', daysUntilChristmas)
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#070169] to-[#15162c] text-white">
-        <a href="/profile"> PROFILE</a>
-        {Array.from({ length: 24 }, (_, i) => {
-            if(month !== 10 || date < i) {
-              return <div key={i}>Item {i + 1} disabled</div>
-            } 
-            
-            
-            return <div key={i}>Item {i + 1}</div>
-          })
-        }
+      <main className="min-h-screen  bg-gradient-to-b from-[#070169] to-[#15162c] text-white">
+        <div className="container mx-auto px-4 py-8 ">
+          <h1 className="text-4xl font-bold text-center text-green-800 dark:text-green-200 mb-4">Christmas Advent Calendar</h1>
+          <p className="text-center text-xl mb-8">
+            Today is {formatDate(today)}. {daysUntilChristmas} days until Christmas!
+          </p>
+          <div className="grid grid-cols-2 container sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 24 }, (_, i) => {
+              return (<CalendarCard key={i} day={i} imageUrl="/favicon.ico" message="hello world"></CalendarCard>)
+            })
+            }
+          </div>
+        </div>
       </main>
     </HydrateClient>
   );
