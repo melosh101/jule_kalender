@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { Card, CardContent } from "@/_components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/dialog"
-
 interface CalendarDayProps {
   day: number
   message: string
@@ -11,6 +10,8 @@ interface CalendarDayProps {
 
 export function CalendarCard({ day, message, imageUrl }: CalendarDayProps) {
   const [isOpen, setIsOpen] = useState(false)
+
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -26,11 +27,10 @@ export function CalendarCard({ day, message, imageUrl }: CalendarDayProps) {
           <DialogTitle>December {day}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <img src={imageUrl} alt={`Christmas image for day ${day}`} className="w-full h-48 object-cover rounded-md" />
           <p className="text-center">{message}</p>
+          <a className='bg-green-600' href={'/challenge/' + day}>Go to challenge</a>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-
