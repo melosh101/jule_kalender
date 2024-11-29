@@ -1,5 +1,3 @@
-import { signOut } from "next-auth/react";
-import Link from "next/link";
 import { auth, signIn } from "~/server/auth";
 import { HydrateClient } from "~/trpc/server";
 import { SignOutButton } from "../../_components/signoutButton";

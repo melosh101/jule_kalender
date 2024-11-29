@@ -128,3 +128,80 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+export const challenge = createTable(
+  "challenge",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    title: varchar("title", { length: 255 }).notNull(),
+    description: text("description"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (c) => ({
+    titleIdx: index("challenge_title_idx").on(c.title),
+  })
+);
+
+export const challengeTests = createTable(
+  "challenge_test",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    challengeId: integer("challenge_id").notNull(),
+    input: text("input").notNull(),
+    output: text("output").notNull(),
+  },
+  (ct) => ({
+    challengeIdIdx: index("challenge_test_challenge_id_idx").on(ct.challengeId),
+  })
+);
+
+export const challengeRelations = relations(challenge, ({ many }) => ({
+  tests: many(challengeTests),
+  submissions: many(challengeSubmissions),
+}));
+
+export const challengeTestsRelations = relations(challengeTests, ({ one }) => ({
+  challenge: one(challenge, {
+    fields: [challengeTests.challengeId],
+    references: [challenge.id],
+  }),
+}));
+
+export const challengeSubmissions = createTable(
+  "challenge_submission",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    challengeId: integer("challenge_id").notNull(),
+    userId: varchar("user_id", { length: 255 }).notNull(),
+    code: text("code").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (cs) => ({
+    challengeIdIdx: index("challenge_submission_challenge_id_idx").on(
+      cs.challengeId
+    ),
+    userIdIdx: index("challenge_submission_user_id_idx").on(cs.userId),
+  })
+);
+
+export const challengeSubmissionRelations = relations(
+  challengeSubmissions,
+  ({ one }) => ({
+    challenge: one(challenge, {
+      fields: [challengeSubmissions.challengeId],
+      references: [challenge.id],
+    }),
+    user: one(users, {
+      fields: [challengeSubmissions.userId],
+      references: [users.id],
+    }),
+  })
+);
+
+
+export type Schallenge = typeof challenge.$inferSelect
+export type SchallengeSubmission = typeof challengeSubmissions.$inferSelect

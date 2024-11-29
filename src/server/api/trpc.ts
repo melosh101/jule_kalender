@@ -131,3 +131,38 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+type Tratelimit = {
+  count: number,
+  time: Date
+}
+
+const ratelimit = new Map<string, Tratelimit>();
+
+export const executionProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(({ ctx, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    const limit = ratelimit.get(ctx.session.user.id);
+    if(!limit) {
+      ratelimit.set(ctx.session.user.id, {count: 1, time: new Date()});
+    }
+    if(limit && limit.count > 5) {
+      if(new Date().getTime() - limit.time.getTime() < 60000) {
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      } else {
+        ratelimit.set(ctx.session.user.id, {count: 1, time: new Date()});
+      }
+    }
+
+    ratelimit.set(ctx.session.user.id, {count: limit ? limit.count + 1 : 1, time: new Date()});
+    
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  })
