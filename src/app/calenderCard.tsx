@@ -2,15 +2,16 @@
 import { useState } from 'react'
 import { Card, CardContent } from "@/_components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/_components/ui/dialog"
+import { type Schallenge } from '~/server/db/schema'
 
 interface CalendarDayProps {
   day: number
-  message: string
-  imageUrl: string
+  challenge: Schallenge
 }
 
-export function CalendarCard({ day, message, imageUrl }: CalendarDayProps) {
+export function CalendarCard({ day, challenge }: CalendarDayProps) {
   const [isOpen, setIsOpen] = useState(false)
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -23,14 +24,13 @@ export function CalendarCard({ day, message, imageUrl }: CalendarDayProps) {
       </DialogTrigger>
       <DialogContent className="min-h-screen min-w-screen max-w-screen-lg">
         <DialogHeader>
-          <DialogTitle>December {day}</DialogTitle>
+          <DialogTitle>{challenge.title}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <img src={imageUrl} alt={`Christmas image for day ${day}`} className="w-full h-48 object-cover rounded-md" />
-          <p className="text-center">{message}</p>
+          <p className="text-center">{challenge.description}</p>
+          <a className='bg-green-600' href={'/challenge/' + day}>Go to challenge</a>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
-

@@ -21,3 +21,25 @@ export function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
+export function debounce<A = unknown, R = void>(
+  fn: (args: A) => R,
+  ms: number
+): [(args: A) => Promise<R>, () => void] {
+  let timer: NodeJS.Timeout;
+
+  const debouncedFunc = (args: A): Promise<R> =>
+      new Promise((resolve) => {
+          if (timer) {
+              clearTimeout(timer);
+          }
+
+          timer = setTimeout(() => {
+              resolve(fn(args));
+          }, ms);
+      });
+
+  const teardown = () => clearTimeout(timer);
+
+  return [debouncedFunc, teardown];
+}
+
