@@ -28,7 +28,7 @@ export function CalendarCard({ day, challenge }: CalendarDayProps) {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <p className="text-center">{challenge.description}</p>
-          <a className='bg-green-600' href={'/challenge/' + day}>Go to challenge</a>
+          <a className='bg-green-600' href={'/challenge/' + challenge.id}>Go to challenge</a>
         </div>
       </DialogContent>
     </Dialog>

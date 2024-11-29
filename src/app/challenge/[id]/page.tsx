@@ -1,7 +1,7 @@
 import { Navbar } from "~/app/_components/ui/navbar"
 import { api} from "~/trpc/server"
 import { CustomEditor } from "./editor"
-import { signIn } from "next-auth/react"
+import { signIn } from "~/server/auth"
 import { auth } from "~/server/auth"
 
 
